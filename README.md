@@ -75,4 +75,4 @@ Requests/sec:  76711.31
 Transfer/sec:     10.75MB
 ```
 
-CCL is ~2 times slower on all configs.
+CCL is ~2-3 times slower on all configs.
