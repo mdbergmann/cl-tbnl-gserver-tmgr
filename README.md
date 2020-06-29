@@ -5,18 +5,6 @@ Hunchentoot Gserver based taskmanager
 
 ### Multi-threaded (default hunchentoot):
 ```
-(CCL)
-wrk -t4 -c100 -d10 "http://localhost:4242/yo"
-Running 10s test @ http://localhost:4242/yo
-  4 threads and 100 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    19.60ms   38.20ms 700.72ms   92.76%
-    Req/Sec     2.83k   389.81     3.75k    71.50%
-  112829 requests in 10.01s, 15.82MB read
-  Socket errors: connect 0, read 108, write 0, timeout 0
-Requests/sec:  11269.13
-Transfer/sec:      1.58MB
-(SBCL)
 wrk -t4 -c100 -d10 "http://localhost:4242/yo"
 Running 10s test @ http://localhost:4242/yo
   4 threads and 100 connections
@@ -28,17 +16,6 @@ Running 10s test @ http://localhost:4242/yo
 Requests/sec:  46635.24
 Transfer/sec:      6.54MB
 
-(CCL)
-wrk -t4 -c10 -d10 "http://localhost:4242/yo"
-Running 10s test @ http://localhost:4242/yo
-  4 threads and 10 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   225.58us  110.91us   2.25ms   95.05%
-    Req/Sec     9.10k   200.38     9.44k    73.51%
-  365861 requests in 10.10s, 51.29MB read
-Requests/sec:  36226.08
-Transfer/sec:      5.08MB
-(SBCL)
 wrk -t4 -c10 -d10 "http://localhost:4242/yo"
 Running 10s test @ http://localhost:4242/yo
   4 threads and 10 connections
@@ -65,18 +42,6 @@ Transfer/sec:      7.99MB
 
 ### gserver (8 workers random order):
 ```
-(CCL)
-wrk -t4 -c100 -d10 "http://localhost:4242/yo"
-Running 10s test @ http://localhost:4242/yo
-  4 threads and 100 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   205.72us   96.43us   1.75ms   97.49%
-    Req/Sec    11.38k     4.73k   18.49k    62.00%
-  339612 requests in 10.08s, 47.61MB read
-  Socket errors: connect 0, read 48, write 0, timeout 1
-Requests/sec:  33698.51
-Transfer/sec:      4.72MB
-(SBCL)
 wrk -t4 -c100 -d10 "http://localhost:4242/yo"
 Running 10s test @ http://localhost:4242/yo
   4 threads and 100 connections
@@ -88,17 +53,6 @@ Running 10s test @ http://localhost:4242/yo
 Requests/sec:  73647.69
 Transfer/sec:     10.32MB
 
-(CCL)
-wrk -t4 -c10 -d10 "http://localhost:4242/yo"
-Running 10s test @ http://localhost:4242/yo
-  4 threads and 10 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   170.32us   81.20us   4.30ms   98.24%
-    Req/Sec     7.83k     2.75k   12.07k    66.00%
-  233702 requests in 10.04s, 32.76MB read
-Requests/sec:  23277.04
-Transfer/sec:      3.26MB
-(SBCL)
 wrk -t4 -c10 -d10 "http://localhost:4242/yo"
 Running 10s test @ http://localhost:4242/yo
   4 threads and 10 connections
@@ -120,3 +74,5 @@ Running 10s test @ http://localhost:4242/yo
 Requests/sec:  76711.31
 Transfer/sec:     10.75MB
 ```
+
+CCL is ~2 times slower on all configs.
