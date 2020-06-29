@@ -4,6 +4,7 @@ Hunchentoot Gserver based taskmanager
 ## Some benchmarks
 
 ### Multi-threaded (default hunchentoot):
+```
 (CCL)
 wrk -t4 -c100 -d10 "http://localhost:4242/yo"
 Running 10s test @ http://localhost:4242/yo
@@ -59,9 +60,11 @@ Running 10s test @ http://localhost:4242/yo
   Non-2xx or 3xx responses: 2972
 Requests/sec:  56635.62
 Transfer/sec:      7.99MB
+```
 
 
 ### gserver (8 workers random order):
+```
 (CCL)
 wrk -t4 -c100 -d10 "http://localhost:4242/yo"
 Running 10s test @ http://localhost:4242/yo
@@ -116,4 +119,4 @@ Running 10s test @ http://localhost:4242/yo
   Socket errors: connect 165, read 242, write 0, timeout 0
 Requests/sec:  76711.31
 Transfer/sec:     10.75MB
-
+```
