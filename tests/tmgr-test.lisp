@@ -85,16 +85,16 @@
                     (tbnl:start *my-acceptor*))
                   :name "Foo"))
 
-(defun start-quux-threaded ()
-  (setf lparallel:*kernel* (lparallel:make-kernel 8))  
-  (setf *my-acceptor* (make-instance 'hunchentoot:easy-acceptor
-                                     :port 4242
-                                     :taskmaster
-                                     (make-instance 'quux-hunchentoot:thread-pooling-taskmaster
-                                                    :max-thread-count 8
-                                                    :max-accept-count 100000)
-                                     :access-log-destination nil))
+;; (defun start-quux-threaded ()
+;;   (setf lparallel:*kernel* (lparallel:make-kernel 8))  
+;;   (setf *my-acceptor* (make-instance 'hunchentoot:easy-acceptor
+;;                                      :port 4242
+;;                                      :taskmaster
+;;                                      (make-instance 'quux-hunchentoot:thread-pooling-taskmaster
+;;                                                     :max-thread-count 8
+;;                                                     :max-accept-count 100000)
+;;                                      :access-log-destination nil))
 
-  (bt:make-thread (lambda ()
-                    (tbnl:start *my-acceptor*))
-                  :name "Foo"))
+;;   (bt:make-thread (lambda ()
+;;                     (tbnl:start *my-acceptor*))
+;;                   :name "Foo"))
