@@ -11,7 +11,7 @@
 
 (defclass gserver-tmgr (multi-threaded-taskmaster)
   ((gserver-pool :initform nil
-                 :type simple-array
+                 :type (or simple-array null)
                  :reader gserver-pool
                  :documentation "the gserver pool. it contains as many gservers as is specified in `:max-thread-count'.")
    (max-thread-count :initarg :max-thread-count
@@ -41,7 +41,7 @@
     (dotimes (i max-thread-count)
       (setf (aref gserver-pool i) (make-instance 'gserver-worker)))))
 
-(defmethod taskmaster-thread-count ((self gserver-tmgr))
+(defmethod taskmaster-thread-count :around ((self gserver-tmgr))
   (length (slot-value self 'gserver-pool)))
 
 (defmethod execute-acceptor ((self gserver-tmgr))

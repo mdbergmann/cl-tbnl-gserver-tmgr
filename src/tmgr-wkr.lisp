@@ -1,5 +1,5 @@
 (defpackage :cl-tbnl-gserver-tmgr.tmgr-wkr
-  (:use :cl :hunchentoot :cl-gserver)
+  (:use :cl :cl-gserver)
   (:nicknames :gstmgr-wkr)
   (:export #:gserver-worker
            #:get-processed-requests
@@ -14,24 +14,23 @@
 (defclass gserver-worker (gserver) ())
 
 (defmethod handle-cast ((self gserver-worker) message current-state)
-  (with-slots (processed-requests) current-state
-    (case (first message)
-      (:process (process-request
-                 (second message)
-                 (third message)
-                 processed-requests
-                 current-state))
-      (t (cons current-state current-state)))))
+  (case (first message)
+    (:process (process-request
+               (second message)
+               (third message)
+               current-state))
+    (t (cons current-state current-state))))
 
-(defun process-request (acceptor socket processed-requests current-state)
+(defun process-request (acceptor socket current-state)
   (handler-case
-      (progn 
-        (process-connection acceptor socket)
-        (cons
-         current-state
-         (make-worker-state
-          :processed-requests
-          (1+ processed-requests))))
+      (progn
+        (with-slots (processed-requests) current-state
+          (tbnl:process-connection acceptor socket)
+          (cons
+           current-state
+           (make-worker-state
+            :processed-requests
+            (1+ processed-requests)))))
     (t (c)
       (progn 
         (log:error "Error: " c)
@@ -40,6 +39,7 @@
          current-state)))))
 
 (defmethod handle-call ((self gserver-worker) message current-state)
+  (declare (ignore message))
   (cons current-state current-state))
 
 (defmethod initialize-instance :after ((self gserver-worker) &key)

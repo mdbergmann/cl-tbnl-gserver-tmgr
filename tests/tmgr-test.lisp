@@ -1,5 +1,5 @@
 (defpackage :cl-tbnl-gserver-tmgr.tmgr-test
-  (:use :cl :fiveam :gstmgr :gstmgr-wkr)
+  (:use :cl :fiveam :gstmgr :gstmgr-wkr :drakma)
   (:export #:run!
            #:all-tests
            #:nil))
@@ -14,6 +14,7 @@
 
 (defclass fake-acceptor (tbnl:acceptor) ())
 (defmethod tbnl:process-connection (fake-acceptor socket)
+  (declare (ignore fake-acceptor socket))
   (incf *process-connection-called*))
 
 (def-fixture start-stop-tmgr (pool-size)
@@ -48,20 +49,35 @@
       (tbnl:handle-incoming-connection cut (make-instance 'usocket:usocket))
       (sleep 0.5)
 
-      (is (= 1 (get-processed-requests worker))))
-    ))
+      (is (= 1 (get-processed-requests worker))))))
+
+(tbnl:define-easy-handler (say-yo :uri "/yo") (name)
+  (setf (hunchentoot:content-type*) "text/plain")
+  (format nil "Hey~@[ ~A~]!" name))
+
+(test server-can-make-real-client-requests
+  "Tests that server can really handle the requests."
+  (let ((acceptor (make-instance 'tbnl:easy-acceptor
+                                 :port 4242
+                                 :access-log-destination nil
+                                 :taskmaster (make-instance 'gserver-tmgr
+                                                            :max-thread-count 8))))
+    (unwind-protect
+         (progn 
+           (tbnl:start acceptor)
+           (is (every (lambda (x) (string= "Hey!" x))
+                      (loop repeat 100
+                            collect (drakma:http-request "http://127.0.0.1:4242/yo")))))
+      (tbnl:stop acceptor))))
 
 
 ;;(run! 'create-tmgr)
 ;;(run! 'tmgr-has-number-of-gservers-we-need)
 ;;(run! 'tmgr-can-respond-to-ask-for-state)
 ;;(run! 'tmgr-calls-process-connection-on-acceptor)
+;;(run! 'server-can-make-real-client-requests)
 
 (defparameter *my-acceptor* nil)
-
-(tbnl:define-easy-handler (say-yo :uri "/yo") (name)
-  (setf (hunchentoot:content-type*) "text/plain")
-  (format nil "Hey~@[ ~A~]!" name))
 
 (defun start-single-threaded ()
   (setf *my-acceptor* (make-instance 'hunchentoot:easy-acceptor
