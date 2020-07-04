@@ -1,6 +1,21 @@
 # cl-tbnl-gserver-tmgr
 Hunchentoot Gserver based taskmanager (experimental)
 
+## Usage
+
+Create an accessor using this taskmanager like so:
+
+```
+(let ((acceptor (make-instance 'tbnl:easy-acceptor
+                                 :port 4242
+                                 :taskmaster (make-instance 'gserver-tmgr
+                                                            :max-thread-count 8))))
+  (tbnl:start acceptor)
+```
+
+With `:max-thread-count` you can control how many `gservers` should be spawned.
+
+
 ## Some benchmarks
 
 ### Multi-threaded (default hunchentoot):
