@@ -4,7 +4,8 @@
   :license "MIT"
   :description "Hunchentoot pooled multi-threaded taskmanager based on cl-gserver."
   :depends-on ("hunchentoot"
-               "cl-gserver")
+               "cl-gserver"
+               "log4cl")
   :components ((:module "src"
                 :serial t
                 :components
@@ -17,7 +18,7 @@
   :license "MIT"
   :depends-on ("cl-tbnl-gserver-tmgr"
                "fiveam"
-               "cl-mock")
+               "drakma")
   :components ((:module "tests"
                 :components
                 ((:file "tmgr-test"))))

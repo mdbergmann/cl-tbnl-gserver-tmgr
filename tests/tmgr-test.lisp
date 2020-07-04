@@ -1,5 +1,5 @@
 (defpackage :cl-tbnl-gserver-tmgr.tmgr-test
-  (:use :cl :fiveam :cl-mock :gstmgr :gstmgr-wkr)
+  (:use :cl :fiveam :gstmgr :gstmgr-wkr)
   (:export #:run!
            #:all-tests
            #:nil))
@@ -10,39 +10,46 @@
 
 (in-suite tmgr-tests)
 
-(def-fixture start-stop-tmgr ()
-  (setf *gserver-tmgr-poolsize* 1)
+(defparameter *process-connection-called* 0)
+
+(defclass fake-acceptor (tbnl:acceptor) ())
+(defmethod tbnl:process-connection (fake-acceptor socket)
+  (incf *process-connection-called*))
+
+(def-fixture start-stop-tmgr (pool-size)
   (let ((cut (make-instance 'gserver-tmgr
-                            :test-acceptor (make-instance 'tbnl:acceptor))))
+                            :test-acceptor (make-instance 'fake-acceptor)
+                            :max-thread-count pool-size)))
     (unwind-protect
          (&body)
       (tbnl:shutdown cut))))
 
 (test create-tmgr
   "Creates the taskmanager"
-  (with-fixture start-stop-tmgr ()
+  (with-fixture start-stop-tmgr (1)
     (is (not (null cut)))))
 
 (test tmgr-has-number-of-gservers-we-need
   "When creating the taskmanager we start the desired number of gservers"
-  (with-fixture start-stop-tmgr ()
-    (is (= 1 (length (slot-value cut 'gserver-pool))))
+  (with-fixture start-stop-tmgr (8)
+    (is (= 8 (tbnl:taskmaster-thread-count cut)))
+    (is (= 8 (length (slot-value cut 'gserver-pool))))
     (is (every (lambda (o) (typep o 'cl-gserver:gserver)) (gserver-pool cut)))))
 
 (test tmgr-can-respond-to-ask-for-state
   "Test that tmgr can respond with it's state."
-  (with-fixture start-stop-tmgr ()
+  (with-fixture start-stop-tmgr (1)
     (is (every (lambda (o) (= 0 (get-processed-requests o))) (gserver-pool cut)))))
 
 (test tmgr-calls-process-connection-on-acceptor
   "Tests that 'process-connection' is called on the acceptor instance."
-  (with-fixture start-stop-tmgr ()
+  (with-fixture start-stop-tmgr (1)
     (let ((worker (aref (gserver-pool cut) 0)))
       (tbnl:handle-incoming-connection cut (make-instance 'usocket:usocket))
       (sleep 0.5)
 
-      (is (= 1 (get-processed-requests worker)))
-    )))
+      (is (= 1 (get-processed-requests worker))))
+    ))
 
 
 ;;(run! 'create-tmgr)

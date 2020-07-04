@@ -16,20 +16,28 @@
 (defmethod handle-cast ((self gserver-worker) message current-state)
   (with-slots (processed-requests) current-state
     (case (first message)
-      (:process (progn
-                  ;;(format t "Calling on 'tbnl:process-connection'...~%")
-                  (handler-case
-                      (tbnl:process-connection
-                       (second message)
-                       (third message))
-                    (t (c)
-                      (format t "Error: ~a~%" c)))
-                  (cons
-                   current-state
-                   (make-worker-state
-                    :processed-requests
-                    (1+ processed-requests)))))
+      (:process (process-request
+                 (second message)
+                 (third message)
+                 processed-requests
+                 current-state))
       (t (cons current-state current-state)))))
+
+(defun process-request (acceptor socket processed-requests current-state)
+  (handler-case
+      (progn 
+        (process-connection acceptor socket)
+        (cons
+         current-state
+         (make-worker-state
+          :processed-requests
+          (1+ processed-requests))))
+    (t (c)
+      (progn 
+        (log:error "Error: " c)
+        (cons
+         current-state
+         current-state)))))
 
 (defmethod handle-call ((self gserver-worker) message current-state)
   (cons current-state current-state))
@@ -41,6 +49,7 @@
 ;; ---------------------------
 ;; worker facade -------------
 ;; ---------------------------
+
 (defun get-processed-requests (worker)
   (with-slots (cl-gserver::state) worker
     (slot-value cl-gserver::state 'processed-requests)))
