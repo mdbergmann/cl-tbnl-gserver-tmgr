@@ -91,3 +91,5 @@ Transfer/sec:     10.75MB
 ```
 
 CCL is ~2-3 times slower on all configs.
+
+![Benchmark](bench-img.png)
