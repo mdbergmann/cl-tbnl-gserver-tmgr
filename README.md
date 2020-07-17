@@ -99,4 +99,4 @@ c = connections
 mt = default multi-threaded hunchentoot taskmanager  
 gserver-8 = taskmanager based on 8 GServer handlers  
 
-![Benchmark](bench-img.png | width=50)
+![Benchmark](bench-img.png)
