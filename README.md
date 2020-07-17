@@ -92,4 +92,11 @@ Transfer/sec:     10.75MB
 
 CCL is ~2-3 times slower on all configs.
 
-![Benchmark](bench-img.png)
+Measured with wrk tool.
+
+t = threads  
+c = connections  
+mt = default multi-threaded hunchentoot taskmanager  
+gserver-8 = taskmanager based on 8 GServer handlers  
+
+![Benchmark](bench-img.png | width=50)
