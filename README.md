@@ -18,6 +18,8 @@ With `:max-thread-count` you can control how many `gservers` should be spawned.
 
 ## Some benchmarks
 
+Hardware: 8 Core Xeon (iMac Pro - Generation 1)
+
 ### Multi-threaded (default hunchentoot):
 ```
 wrk -t4 -c100 -d10 "http://localhost:4242/yo"
