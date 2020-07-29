@@ -90,6 +90,41 @@ Requests/sec:  76711.31
 Transfer/sec:     10.75MB
 ```
 
+### Woo (8 workers)
+
+```
+wrk -t4 -c100 -d10 "http://localhost:5000"
+Running 10s test @ http://localhost:5000
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.30ms    0.87ms   9.08ms   82.67%
+    Req/Sec    20.57k     1.06k   23.20k    66.75%
+  819004 requests in 10.01s, 121.06MB read
+Requests/sec:  81838.94
+Transfer/sec:     12.10MB
+
+wrk -t4 -c10 -d10 "http://localhost:5000"
+Running 10s test @ http://localhost:5000
+  4 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   221.40us  356.67us   4.66ms   90.30%
+    Req/Sec    15.19k   310.79    15.81k    74.01%
+  610637 requests in 10.10s, 90.26MB read
+Requests/sec:  60444.28
+Transfer/sec:      8.93MB
+------------- massive connection errors --------------------
+wrk -t16 -c400 -d10 "http://localhost:5000"
+Running 10s test @ http://localhost:5000
+  16 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     4.16ms    2.43ms  42.78ms   84.66%
+    Req/Sec     3.43k     1.70k    7.08k    50.25%
+  546714 requests in 10.02s, 80.82MB read
+  Socket errors: connect 165, read 32513, write 0, timeout 0
+Requests/sec:  54581.30
+Transfer/sec:      8.07MB
+```
+
 CCL is ~2-3 times slower on all configs.
 
 Measured with wrk tool.
