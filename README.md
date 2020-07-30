@@ -18,7 +18,7 @@ With `:max-thread-count` you can control how many `gservers` should be spawned.
 
 ## Some benchmarks
 
-Hardware: 8 Core Xeon (iMac Pro - Generation 1)
+Hardware: iMac Pro - Generation 1 - Xeon 8 cores
 OS: macOS Catalina (10.15)
 CL: SBCL 2.0.6
 
