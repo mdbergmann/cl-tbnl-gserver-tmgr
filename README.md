@@ -19,8 +19,10 @@ With `:max-thread-count` you can control how many `gservers` should be spawned.
 ## Some benchmarks
 
 Hardware: 8 Core Xeon (iMac Pro - Generation 1)
+OS: macOS Catalina (10.15)
+CL: SBCL 2.0.6
 
-### Multi-threaded (default hunchentoot):
+### Hunchentoot with default multi-threaded taskmanager:
 ```
 wrk -t4 -c100 -d10 "http://localhost:4242/yo"
 Running 10s test @ http://localhost:4242/yo
@@ -57,7 +59,7 @@ Transfer/sec:      7.99MB
 ```
 
 
-### gserver (8 workers random order):
+### Hunchentoot with GServer based taskmanager with 8 workers (random order):
 ```
 wrk -t4 -c100 -d10 "http://localhost:4242/yo"
 Running 10s test @ http://localhost:4242/yo
@@ -92,7 +94,7 @@ Requests/sec:  76711.31
 Transfer/sec:     10.75MB
 ```
 
-### Woo (8 workers)
+### Woo with 8 workers
 
 ```
 wrk -t4 -c100 -d10 "http://localhost:5000"
