@@ -1,19 +1,24 @@
 (defpackage :cl-tbnl-gserver-tmgr.tmgr-wkr
-  (:use :cl :cl-gserver)
+  (:use :cl :cl-gserver.actor)
   (:nicknames :gstmgr-wkr)
-  (:export #:gserver-worker
-           #:get-processed-requests
-           #:do-process-connection
-           #:stop-worker))
+  (:export #:tmgr-worker
+           #:make-tmgr-worker
+           #:get-processed-requests))
 
 (in-package :cl-tbnl-gserver-tmgr.tmgr-wkr)
 
 (defstruct worker-state
   (processed-requests 0 :type integer))
 
-(defclass gserver-worker (gserver) ())
+(defclass tmgr-worker (actor) ())
 
-(defmethod handle-cast ((self gserver-worker) message current-state)
+(defun make-tmgr-worker ()
+  (make-instance 'tmgr-worker
+                 :receive #'receive
+                 :state (make-worker-state)))
+
+(defun receive (worker message current-state)
+  (declare (ignore worker))
   (case (first message)
     (:process (process-request
                (second message)
@@ -38,24 +43,10 @@
          current-state
          current-state)))))
 
-(defmethod handle-call ((self gserver-worker) message current-state)
-  (declare (ignore message))
-  (cons current-state current-state))
-
-(defmethod initialize-instance :after ((self gserver-worker) &key)
-  (with-slots (cl-gserver::state) self
-    (setf cl-gserver::state (make-worker-state))))
-
 ;; ---------------------------
 ;; worker facade -------------
 ;; ---------------------------
 
 (defun get-processed-requests (worker)
-  (with-slots (cl-gserver::state) worker
-    (slot-value cl-gserver::state 'processed-requests)))
-
-(defun do-process-connection (worker acceptor socket)
-  (cast worker `(:process ,acceptor ,socket)))
-
-(defun stop-worker (worker)
-  (cast worker :stop))
+  (with-slots (act-cell:state) worker
+    (slot-value act-cell:state 'processed-requests)))

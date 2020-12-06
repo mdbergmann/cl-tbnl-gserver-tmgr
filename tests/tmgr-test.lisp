@@ -33,19 +33,19 @@
 (test tmgr-has-number-of-gservers-we-need
   "When creating the taskmanager we start the desired number of gservers"
   (with-fixture start-stop-tmgr (8)
-    (is (= 8 (tbnl:taskmaster-thread-count cut)))
-    (is (= 8 (length (slot-value cut 'gserver-pool))))
-    (is (every (lambda (o) (typep o 'cl-gserver:gserver)) (gserver-pool cut)))))
+    ;;(is (= 8 (tbnl:taskmaster-thread-count cut)))
+    (is (= 8 (length (router:routees (router cut)))))))
 
 (test tmgr-can-respond-to-ask-for-state
   "Test that tmgr can respond with it's state."
   (with-fixture start-stop-tmgr (1)
-    (is (every (lambda (o) (= 0 (get-processed-requests o))) (gserver-pool cut)))))
+    (is (every (lambda (o) (= 0 (get-processed-requests o)))
+               (router:routees (router cut))))))
 
 (test tmgr-calls-process-connection-on-acceptor
   "Tests that 'process-connection' is called on the acceptor instance."
   (with-fixture start-stop-tmgr (1)
-    (let ((worker (aref (gserver-pool cut) 0)))
+    (let ((worker (first (router:routees (router cut)))))
       (tbnl:handle-incoming-connection cut (make-instance 'usocket:usocket))
       (sleep 0.5)
 

@@ -1,5 +1,5 @@
 (defsystem "cl-tbnl-gserver-tmgr"
-  :version "0.1.0"
+  :version "0.1.1"
   :author "Manfred Bergmann"
   :license "MIT"
   :description "Hunchentoot pooled multi-threaded taskmanager based on cl-gserver."
