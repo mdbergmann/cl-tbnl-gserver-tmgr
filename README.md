@@ -1,5 +1,5 @@
 # cl-tbnl-gserver-tmgr
-Hunchentoot Gserver based taskmanager (experimental)
+Hunchentoot cl-gserver based taskmanager (experimental)
 
 ## Usage
 
