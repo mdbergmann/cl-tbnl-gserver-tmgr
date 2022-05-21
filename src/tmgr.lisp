@@ -10,7 +10,7 @@
 (defparameter *gserver-tmgr-poolsize* 8)
 
 (defclass gserver-tmgr (multi-threaded-taskmaster)
-  ((asystem :initform (asys:make-actor-system :shared-dispatcher-workers 0))
+  ((asystem :initform (asys:make-actor-system '(:dispatchers (:shared (:workers 0)))))
    (router :initform nil
            :reader router
            :documentation
@@ -40,10 +40,7 @@ A number of <cores> * 2 could be a good value.")
     (unless router
       (setf router (router:make-router)))
     (dotimes (i max-thread-count)
-      (router:add-routee router (ac:actor-of asystem
-                                             (lambda ()
-                                               (make-tmgr-worker))
-                                             :dispatch-type :pinned)))))
+      (router:add-routee router (make-tmgr-worker asystem)))))
 
 (defmethod taskmaster-thread-count :around ((self gserver-tmgr))
   (length (slot-value self 'max-thread-count)))

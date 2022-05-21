@@ -12,10 +12,12 @@
 
 (defclass tmgr-worker (actor) ())
 
-(defun make-tmgr-worker ()
-  (make-instance 'tmgr-worker
-                 :receive #'receive
-                 :state (make-worker-state)))
+(defun make-tmgr-worker (asystem)
+  (ac:actor-of asystem
+               :state (make-worker-state)
+               :receive #'receive
+               :dispatcher :pinned
+               :state (make-worker-state)))
 
 (defun receive (worker message current-state)
   (declare (ignore worker))
