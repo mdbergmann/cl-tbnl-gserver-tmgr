@@ -6,7 +6,7 @@
 (in-package :cl-tbnl-gserver-tmgr.tmgr-test)
 
 (def-suite tmgr-tests
-  :description "GServer Taskmanager tests.")
+  :description "Sento Taskmanager tests.")
 
 (in-suite tmgr-tests)
 

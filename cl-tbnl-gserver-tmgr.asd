@@ -4,7 +4,7 @@
   :license "MIT"
   :description "Hunchentoot pooled multi-threaded taskmanager based on cl-gserver."
   :depends-on ("hunchentoot"
-               "cl-gserver"
+               "sento"
                "log4cl")
   :components ((:module "src"
                 :serial t

@@ -1,5 +1,5 @@
 (defpackage :cl-tbnl-gserver-tmgr.tmgr-wkr
-  (:use :cl :cl-gserver.actor)
+  (:use :cl :sento.actor)
   (:nicknames :gstmgr-wkr)
   (:export #:tmgr-worker
            #:make-tmgr-worker
@@ -19,31 +19,22 @@
                :dispatcher :pinned
                :state (make-worker-state)))
 
-(defun receive (worker message current-state)
-  (declare (ignore worker))
+(defun receive (message)
   (case (first message)
     (:process (process-request
                (second message)
-               (third message)
-               current-state))
-    (t (cons current-state current-state))))
+               (third message)))))
 
-(defun process-request (acceptor socket current-state)
+(defun process-request (acceptor socket)
   (handler-case
       (progn
-        (with-slots (processed-requests) current-state
+        (with-slots (processed-requests) *state*
           (tbnl:process-connection acceptor socket)
-          (cons
-           current-state
-           (make-worker-state
+          (setf *state* (make-worker-state
             :processed-requests
             (1+ processed-requests)))))
     (t (c)
-      (progn 
-        (log:error "Error: " c)
-        (cons
-         current-state
-         current-state)))))
+       (log:error "Error: " c))))
 
 ;; ---------------------------
 ;; worker facade -------------
