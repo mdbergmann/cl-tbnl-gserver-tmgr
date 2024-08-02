@@ -13,7 +13,7 @@ Create an accessor using this taskmanager like so:
   (tbnl:start acceptor))
 ```
 
-With `:max-thread-count` you can control how many `gservers` should be spawned.
+With `:max-thread-count` you can control how many request processing actors (like thread-pool) should be spawned.
 
 
 ## Some benchmarks
